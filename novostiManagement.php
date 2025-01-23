@@ -12,7 +12,7 @@ $total_articles = $total_result->fetch_assoc()['total'];
 $total_pages = ceil($total_articles / $limit);
 
 
-$stmt = $conn->prepare("SELECT id, title, publication_date, thumbnail, is_approved FROM articles ORDER BY publication_date DESC LIMIT ? OFFSET ?");
+$stmt = $conn->prepare("SELECT id, title, publication_date, thumbnail, is_approved FROM articles ORDER BY is_approved ASC, publication_date DESC LIMIT ? OFFSET ?");
 $stmt->bind_param('ii', $limit, $offset);
 $stmt->execute();
 $articles = $stmt->get_result();
