@@ -121,10 +121,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <h1>Upravljanje korisnicima</h1>
 
     <form method="GET" action="index.php" class="search-form">
-        <input type="hidden" name="page" value="korisnici">
-        <input type="text" name="search" placeholder="Pretraži korisnike..." value="<?php echo htmlspecialchars($search); ?>" class="search-input">
-        <button type="submit" class="search-button">Pretraži</button>
-    </form>
+    <input type="hidden" name="page" value="admin">
+    <input type="hidden" name="tab" value="korisnici">
+    <input type="text" name="search" placeholder="Pretraži korisnike..." value="<?php echo htmlspecialchars($search); ?>" class="search-input">
+    <button type="submit" class="search-button">Pretraži</button>
+</form>
 
     <table class="crud-table">
         <thead>

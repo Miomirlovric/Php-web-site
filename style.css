@@ -414,7 +414,7 @@ footer {
 }
 
 .crud-container {
-    margin: 40px auto;
+    margin: 10px auto;
     padding: 20px;
     border-radius: 10px;
     background-color: #ffffff;
@@ -1325,4 +1325,34 @@ footer {
     font-size: 1rem;
     margin-top: 10px;
     text-align: center;
+}
+.search-form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.search-form input[type="text"] {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 300px;
+    margin-right: 10px;
+}
+
+.search-form button {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.search-form button:hover {
+    background-color: #0056b3;
 }

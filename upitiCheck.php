@@ -5,21 +5,26 @@ $limit = 5;
 $page = isset($_GET['page']) ? max((int)$_GET['page'], 1) : 1;
 $offset = ($page - 1) * $limit; 
 
-$count_query = "SELECT COUNT(*) AS total FROM contact";
+$search = isset($_GET['search']) ? trim($_GET['search']) : '';
+$search_query = '';
+
+if ($search) {
+    $search_query = " WHERE email LIKE '%$search%'";
+}
+
+$count_query = "SELECT COUNT(*) AS total FROM contact $search_query";
 $total_result = $conn->query($count_query);
 $total_contacts = $total_result->fetch_assoc()['total'];
 $total_pages = ceil($total_contacts / $limit);
 
-$stmt = $conn->prepare("
+$contacts_query = "
     SELECT id, ime, prezime, email, drzava, opis, checked, created_at 
-    FROM contact 
+    FROM contact
+    $search_query 
     ORDER BY checked ASC, created_at DESC 
-    LIMIT ? OFFSET ?
-");
-
-$stmt->bind_param('ii', $limit, $offset);
-$stmt->execute();
-$contacts = $stmt->get_result();
+    LIMIT $limit OFFSET $offset
+";
+$contacts = $conn->query($contacts_query);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_checked'])) {
     $contact_id = (int)$_POST['contact_id'];
@@ -38,6 +43,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_checked'])) {
 
 <div class="contacts-container">
     <h1 class="contacts-header">Upiti</h1>
+
+    <form method="get" action="index.php" class="search-form">
+        <input type="hidden" name="page" value="admin">
+        <input type="hidden" name="tab" value="upitiCheck">
+        <input type="text" name="search" placeholder="Pretraži po emailu..." value="<?php echo htmlspecialchars($search); ?>">
+        <button type="submit">Pretraži</button>
+    </form>
 
     <div class="contacts-table-wrapper">
         <table class="contacts-table">
@@ -82,18 +94,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_checked'])) {
 
     <div class="pagination">
         <?php if ($page > 1): ?>
-            <a href="index.php?page=admin&tab=kontakti&page=<?php echo $page - 1; ?>" class="pagination-link">Prethodna</a>
+            <a href="index.php?page=admin&tab=kontakti&page=<?php echo $page - 1; ?>&search=<?php echo urlencode($search); ?>" class="pagination-link">Prethodna</a>
         <?php endif; ?>
 
         <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-            <a href="index.php?page=admin&tab=kontakti&page=<?php echo $i; ?>"
+            <a href="index.php?page=admin&tab=kontakti&page=<?php echo $i; ?>&search=<?php echo urlencode($search); ?>"
                 class="pagination-link <?php echo $i === $page ? 'active' : ''; ?>">
                 <?php echo $i; ?>
             </a>
         <?php endfor; ?>
 
         <?php if ($page < $total_pages): ?>
-            <a href="index.php?page=admin&tab=kontakti&page=<?php echo $page + 1; ?>" class="pagination-link">Sljedeća</a>
+            <a href="index.php?page=admin&tab=kontakti&page=<?php echo $page + 1; ?>&search=<?php echo urlencode($search); ?>" class="pagination-link">Sljedeća</a>
         <?php endif; ?>
     </div>
 </div>
